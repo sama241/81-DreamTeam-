@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -50,6 +52,18 @@ public abstract class MainRepository<T> {
         saveAll(allData);
     }
 
+
+    protected void writeToJson(List<T> data) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+        try {
+            File file = new File(getDataPath());
+            objectMapper.writeValue(file, data);
+        } catch (IOException e) {
+            throw new RuntimeException("Error writing to JSON file: " + e.getMessage());
+        }
+    }
 
 
     public void overrideData(ArrayList<T> data) {
