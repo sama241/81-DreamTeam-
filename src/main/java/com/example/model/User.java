@@ -1,24 +1,18 @@
 package com.example.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Component
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
     private UUID id;
     private String name;
-    private List<Order> orders = new ArrayList<>();
+    private List<Order> orders=new ArrayList<>();
 }
