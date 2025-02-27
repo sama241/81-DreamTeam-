@@ -6,6 +6,7 @@ import com.example.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -43,5 +44,21 @@ public class UserController {
     public String deleteUserById(@PathVariable UUID userId) {
         userService.deleteUserById(userId);
         return "User deleted successfully with ID: " + userId;
+    }
+    @GetMapping("/{userId}")
+    public User getUserById(@PathVariable UUID userId) {
+        return userService.getUserById(userId);
+    }
+
+
+    @GetMapping("/{userId}/orders")
+    public List<Order> getOrdersByUserId(@PathVariable UUID userId) {
+        return userService.getOrdersByUserId(userId);
+    }
+
+    @PostMapping("/{userId}/removeOrder")
+    public String removeOrderFromUser(@PathVariable UUID userId, @RequestParam UUID orderId) {
+        userService.removeOrderFromUser(userId, orderId);
+        return "Order removed successfully!";
     }
 }

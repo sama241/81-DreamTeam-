@@ -6,6 +6,7 @@ import com.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -37,5 +38,16 @@ public class UserService  extends MainService {
     // 7️⃣ Delete User by ID
     public void deleteUserById(UUID userId) {
         userRepository.deleteUserById(userId);
+    }
+    public User getUserById(UUID userId) {
+        return userRepository.getUserById(userId);
+    }
+
+    public List<Order> getOrdersByUserId(UUID userId) {
+        return userRepository.getOrdersByUserId(userId);
+    }
+
+    public void removeOrderFromUser(UUID userId, UUID orderId) {
+        userRepository.removeOrderFromUser(userId, orderId);
     }
 }
