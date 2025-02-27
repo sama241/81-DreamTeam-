@@ -10,7 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Component
-@JsonIgnoreProperties(ignoreUnknown = true)  // ✅ Ignore unknown fields
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Product {
     private UUID id;
     private String name;
