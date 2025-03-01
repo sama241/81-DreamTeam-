@@ -32,9 +32,8 @@ public class UserController {
 
 
     @PostMapping("/{userId}/checkout")
-    public String addOrderToUser(@PathVariable UUID userId){
+    public void addOrderToUser(@PathVariable UUID userId){
         userService.addOrderToUser(userId);
-        return "Order added successfully for user ID: " + userId;
     }
 
     @DeleteMapping("/delete/{userId}")

@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.model.Cart;
 import com.example.model.User;
 import com.example.model.Order;
 import com.example.repository.UserRepository;
@@ -35,10 +36,13 @@ public class UserService  extends MainService {
     }
 
     public void addOrderToUser(UUID userId) {
-        // Checkout process
-        emptyCart(userId); // Clears cart after order
-        // Add order to user (Assume order object is created earlier)
-        orderService.addOrder(new Order(userId, 0.0, new ArrayList<>()));
+        System.out.println(userId);
+        Cart cart=cartService.getCartByUserId(userId);
+        System.out.println(cart);
+        Order order=new Order(userId,cart.getTotalPrice(), cart.getProducts());
+        orderService.addOrder(order);
+        cartService.deleteCartById(cart.getId()); // Clears cart after order
+        userRepository.addOrderToUser(userId,order);
     }
 
     public void deleteUserById(UUID userId) {
@@ -56,6 +60,9 @@ public class UserService  extends MainService {
         userRepository.removeOrderFromUser(userId, orderId);
     }
     public void emptyCart(UUID userId) {
-        cartService.deleteCartById(userId);
+
+        Cart cart=cartService.getCartByUserId(userId);
+        cartService.deleteCartById(cart.getId());
+
     }
 }

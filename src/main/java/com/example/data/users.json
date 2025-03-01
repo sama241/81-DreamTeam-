@@ -1,18 +1,1 @@
-[ {
-  "id" : "098f6545-c973-4226-a643-5c23465c8d4b",
-  "name" : "Test User18",
-  "orders" : [ ]
-}, {
-  "id" : "7df008d4-e5a0-4b6b-bf4b-f4a24e2c38fb",
-  "name" : "Yasmin el Diasty",
-  "orders" : [ {
-    "id" : "11111111-2222-3333-4444-555555555555",
-    "userId" : "7df008d4-e5a0-4b6b-bf4b-f4a24e2c38fb",
-    "totalPrice" : 50.99,
-    "products" : [ ]
-  } ]
-}, {
-  "id" : "fae5b61b-5eb6-4c48-9d5a-945d54b36e79",
-  "name" : "Sama Samy",
-  "orders" : [ ]
-} ]
+[{"id":"d9a8d620-69ea-4168-b77a-a4fc2858a2cf","name":"sama","orders":[{"id":"63d99cc3-a879-42fc-b580-153a24ecc7b6","userId":"d9a8d620-69ea-4168-b77a-a4fc2858a2cf","totalPrice":16299.99,"products":[{"id":"60afbb9d-2890-4855-82dd-74385235f89b","name":"mobile","price":16200.0},{"id":"ad3830b0-d447-4a40-af29-590de0203436","name":"Wireless Headphones","price":99.99}]}]},{"id":"94852b5b-d55d-44e0-92c1-29a81a0533f2","name":"salma","orders":[]},{"id":"c2079703-fff3-4bae-8f40-f5ce372f9b99","name":"sara","orders":[]}]
