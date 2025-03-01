@@ -45,10 +45,4 @@ public class CartService extends MainService<Cart>{
         cartRepository.deleteCartById(cartId);
     }
 
-
-
-
-
-
-
 }

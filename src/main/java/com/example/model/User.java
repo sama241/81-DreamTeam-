@@ -15,4 +15,8 @@ public class User {
     private UUID id;
     private String name;
     private List<Order> orders=new ArrayList<>();
+    public User(String name, List<Order> orders) {
+        this.name = name;
+        this.orders = orders != null ? orders : new ArrayList<>();
+    }
 }
