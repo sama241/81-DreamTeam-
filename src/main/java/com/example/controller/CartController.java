@@ -54,6 +54,12 @@ public class CartController {
         return "Cart deleted successfully.";
     }
 
+    @GetMapping("/total/{cartId}")
+    public double getTotalPrice(@PathVariable UUID cartId) {
+        return cartService.getTotalPrice(cartId);
+    }
+
+
 
 
 

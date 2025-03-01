@@ -1,5 +1,6 @@
 package com.example.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,5 +25,12 @@ public class Cart {
     public Cart(UUID userId, List<Product> products) {
         this.userId = userId;
         this.products = products != null ? products : new ArrayList<>();
+    }
+
+    @JsonIgnore
+    public double getTotalPrice() {
+        return products.stream()
+                .mapToDouble(Product::getPrice)
+                .sum();
     }
 }

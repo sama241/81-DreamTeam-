@@ -38,7 +38,7 @@ public class UserService  extends MainService {
         // Checkout process
         emptyCart(userId); // Clears cart after order
         // Add order to user (Assume order object is created earlier)
-        orderService.addOrder(new Order(userId, new ArrayList<>(), 0.0));
+        orderService.addOrder(new Order(userId, 0.0, new ArrayList<>()));
     }
 
     public void deleteUserById(UUID userId) {
