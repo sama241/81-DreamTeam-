@@ -12,12 +12,18 @@ import java.util.UUID;
 @SuppressWarnings("rawtypes")
 public class CartService extends MainService<Cart>{
     private final CartRepository cartRepository;
+    private final Cart cart;
 
-    public CartService(CartRepository cartRepository) {
+    public CartService(CartRepository cartRepository, Cart cart) {
         this.cartRepository = cartRepository;
+        this.cart = cart;
     }
 
     public Cart addCart(Cart cart) {
+        Cart existingCart = cartRepository.getCartByUserId(cart.getUserId());
+        if (existingCart != null) {
+            return existingCart;
+        }
         return cartRepository.addCart(cart);
     }
 
