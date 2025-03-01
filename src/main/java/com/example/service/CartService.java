@@ -45,6 +45,13 @@ public class CartService extends MainService<Cart>{
         cartRepository.deleteCartById(cartId);
     }
 
+    public double getTotalPrice(UUID cartId) {
+        Cart cart = cartRepository.getCartById(cartId);
+        return (cart != null) ? cart.getTotalPrice() : 0.0;
+    }
+
+
+
 
 
 
