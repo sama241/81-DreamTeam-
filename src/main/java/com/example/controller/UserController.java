@@ -20,26 +20,22 @@ public class UserController {
         this.userService = userService;
     }
 
-    // 1️⃣ Add User (POST /user/)
     @PostMapping("/")
     public User addUser(@RequestBody User user) {
         return userService.addUser(user);
     }
 
-    // 3️⃣ Get All Users (GET /user/)
     @GetMapping("/")
     public ArrayList<User> getUsers() {
         return userService.getUsers();
     }
 
-    // 5️⃣ Check Out (Add Order to User) (POST /user/{userId}/checkout)
+
     @PostMapping("/{userId}/checkout")
-    public String addOrderToUser(@PathVariable UUID userId, @RequestBody Order order) {
-        userService.addOrderToUser(userId, order);
-        return "Order added successfully for user ID: " + userId;
+    public void addOrderToUser(@PathVariable UUID userId){
+        userService.addOrderToUser(userId);
     }
 
-    // 7️⃣ Delete User (DELETE /user/delete/{userId})
     @DeleteMapping("/delete/{userId}")
     public String deleteUserById(@PathVariable UUID userId) {
         userService.deleteUserById(userId);
@@ -60,5 +56,10 @@ public class UserController {
     public String removeOrderFromUser(@PathVariable UUID userId, @RequestParam UUID orderId) {
         userService.removeOrderFromUser(userId, orderId);
         return "Order removed successfully!";
+    }
+    @DeleteMapping("/{userId}/emptyCart")
+    public String emptyCart(@PathVariable UUID userId){
+        userService.emptyCart(userId);
+        return "Cart is empty";
     }
 }

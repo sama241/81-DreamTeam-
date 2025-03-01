@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.model.Cart;
 import com.example.model.User;
 import com.example.model.Order;
 import com.example.repository.UserRepository;
@@ -14,28 +15,36 @@ import java.util.UUID;
 public class UserService  extends MainService {
 
     private final UserRepository userRepository;
+    private final CartService cartService; // Dependency
+    private final OrderService orderService; // Dependency
 
     // 🔹 Dependency Injection: Spring automatically injects UserRepository here
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, CartService cartService, OrderService orderService) {
         this.userRepository = userRepository;
+        this.cartService = cartService;
+        this.orderService = orderService;
     }
 
-    // 1️⃣ Add New User
+
     public User addUser(User user) {
         return userRepository.addUser(user);
     }
 
-    // 3️⃣ Get All Users
+
     public ArrayList<User> getUsers() {
         return userRepository.getUsers();
     }
 
-    // 5️⃣ Add Order to User
-    public void addOrderToUser(UUID userId, Order order) {
-        userRepository.addOrderToUser(userId, order);
+    public void addOrderToUser(UUID userId) {
+        System.out.println(userId);
+        Cart cart=cartService.getCartByUserId(userId);
+        System.out.println(cart);
+        Order order=new Order(userId,cart.getTotalPrice(), cart.getProducts());
+        orderService.addOrder(order);
+        cartService.deleteCartById(cart.getId()); // Clears cart after order
+        userRepository.addOrderToUser(userId,order);
     }
 
-    // 7️⃣ Delete User by ID
     public void deleteUserById(UUID userId) {
         userRepository.deleteUserById(userId);
     }
@@ -49,5 +58,11 @@ public class UserService  extends MainService {
 
     public void removeOrderFromUser(UUID userId, UUID orderId) {
         userRepository.removeOrderFromUser(userId, orderId);
+    }
+    public void emptyCart(UUID userId) {
+
+        Cart cart=cartService.getCartByUserId(userId);
+        cartService.deleteCartById(cart.getId());
+
     }
 }
