@@ -1,10 +1,12 @@
 package com.example.service;
 
 import com.example.model.Cart;
+import com.example.model.Product;
 import com.example.model.User;
 import com.example.model.Order;
 import com.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +19,14 @@ public class UserService  extends MainService {
     private final UserRepository userRepository;
     private final CartService cartService; // Dependency
     private final OrderService orderService; // Dependency
+    private final ProductService productService;
 
     // 🔹 Dependency Injection: Spring automatically injects UserRepository here
-    public UserService(UserRepository userRepository, CartService cartService, OrderService orderService) {
+    public UserService(UserRepository userRepository, CartService cartService, OrderService orderService, ProductService productService) {
         this.userRepository = userRepository;
         this.cartService = cartService;
         this.orderService = orderService;
+        this.productService = productService;
     }
 
 
@@ -32,7 +36,7 @@ public class UserService  extends MainService {
 
 
     public ArrayList<User> getUsers() {
-        return userRepository.getUsers();
+        return (ArrayList<User>) userRepository.getUsers();
     }
 
     public void addOrderToUser(UUID userId) {
@@ -65,4 +69,15 @@ public class UserService  extends MainService {
         cartService.deleteCartById(cart.getId());
 
     }
+    public void addProductToCart(UUID userId, UUID productId){
+       Cart cart= cartService.getCartByUserId(userId);
+        Product product=productService.getProductById(productId);
+        cartService.addProductToCart(cart.getId(),product);
+    }
+    public void deleteProductFromCart(UUID userId,UUID productId) {
+        Cart cart=cartService.getCartByUserId(userId);
+        Product product=productService.getProductById(productId);
+        cartService.deleteProductFromCart(cart.getId(),product);
+    }
+
 }

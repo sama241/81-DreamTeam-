@@ -32,7 +32,7 @@ public class ProductController {
         return productService.getProductById(productId);
     }
 
-    @PutMapping("/{productId}")
+    @PutMapping("/update/{productId}")
     public Product updateProduct(@PathVariable UUID productId, @RequestBody Map<String, Object> updates) {
         String newName = (String) updates.get("newName");
         double newPrice = ((Number) updates.get("newPrice")).doubleValue();
@@ -54,6 +54,6 @@ public class ProductController {
     @DeleteMapping("/delete/{productId}")
     public String deleteProductById(@PathVariable UUID productId) {
         productService.deleteProductById(productId);
-        return "Product deleted successfully!";
+        return "Product deleted successfully";
     }
 }

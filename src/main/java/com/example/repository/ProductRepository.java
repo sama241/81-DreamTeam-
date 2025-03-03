@@ -21,7 +21,9 @@ public class ProductRepository extends MainRepository<Product> {
         return Product[].class;
     }
     public Product addProduct(Product product) {
-        product.setId(UUID.randomUUID());
+        if(product.getId() == null){
+            product.setId(UUID.randomUUID());
+        }
         ArrayList<Product> productList = findAll();  // ✅ Load from JSON file
         productList.add(product);
         saveAll(productList);  // ✅ Save back to JSON

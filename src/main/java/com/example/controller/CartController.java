@@ -16,12 +16,12 @@ public class CartController {
     public CartController(CartService cartService) {
         this.cartService = cartService;
     }
-    @PostMapping("/addCart")
+    @PostMapping("/")
     public Cart addCart(@RequestBody Cart cart) {
         return cartService.addCart(cart);  // Calls the Service layer
     }
 
-    @GetMapping("/getCarts")
+    @GetMapping("/")
     public ArrayList<Cart> getCarts() {
         return cartService.getCarts();
     }
@@ -39,19 +39,19 @@ public class CartController {
     @PutMapping("/addProduct/{cartId}")
     public String addProductToCart(@PathVariable UUID cartId, @RequestBody Product product) {
         cartService.addProductToCart(cartId, product);
-        return "Product added to cart successfully.";
+        return "Product added to cart successfully";
     }
 
     @DeleteMapping("/deleteProduct/{cartId}")
     public String deleteProductFromCart(@PathVariable UUID cartId, @RequestBody Product product) {
         cartService.deleteProductFromCart(cartId, product);
-        return "Product removed from cart successfully.";
+        return "Product deleted from cart";
     }
 
     @DeleteMapping("/delete/{cartId}")
     public String deleteCartById(@PathVariable UUID cartId) {
         cartService.deleteCartById(cartId);
-        return "Cart deleted successfully.";
+        return "Cart deleted successfully";
     }
 
     @GetMapping("/total/{cartId}")

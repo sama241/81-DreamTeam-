@@ -22,20 +22,24 @@ public class UserRepository extends MainRepository<User> {
     }
 
     // 1️⃣ Get All Users
-    public ArrayList<User> getUsers() {
+    public List<User> getUsers() {
+
         return findAll();
     }
 
     // 3️⃣ Add New User
     public User addUser(User user) {
-        user.setId(UUID.randomUUID()); // Ensure the user has a unique ID
-        save(user); // Uses MainRepository's save() to write to JSON
+        if (user.getId() == null) {  // ✅ Only generate an ID if it's missing
+            user.setId(UUID.randomUUID());
+        }
+        save(user);
         return user;
     }
 
+
     // 5️⃣ Add Order to a User
     public void addOrderToUser(UUID userId, Order order) {
-        ArrayList<User> users = getUsers(); // Get the list of users
+        ArrayList<User> users = (ArrayList<User>) getUsers(); // Get the list of users
         for (User user : users) {
             if (user.getId().equals(userId)) {
                 user.getOrders().add(order); // Add the order to the user's list
@@ -47,7 +51,7 @@ public class UserRepository extends MainRepository<User> {
 
     // 7️⃣ Delete User by ID
     public void deleteUserById(UUID userId) {
-        ArrayList<User> users = getUsers(); // Get all users
+        ArrayList<User> users = (ArrayList<User>) getUsers(); // Get all users
         users.removeIf(user -> user.getId().equals(userId)); // Remove the matching user
         overrideData(users); // Save the updated user list
     }

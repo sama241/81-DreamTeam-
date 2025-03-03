@@ -18,7 +18,6 @@ public class OrderService extends MainService<Order> {
 
     // 7.5.2.1 Add Order
     public void addOrder(Order order) {
-        order.setId(UUID.randomUUID()); // Ensure the order has a unique ID
         orderRepository.addOrder(order);
     }
 
