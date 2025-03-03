@@ -71,6 +71,8 @@ public class UserService  extends MainService {
     }
     public void addProductToCart(UUID userId, UUID productId){
        Cart cart= cartService.getCartByUserId(userId);
+       System.out.println("ana hena 2");
+       System.out.println(cart.getId());
         Product product=productService.getProductById(productId);
         cartService.addProductToCart(cart.getId(),product);
     }

@@ -36,8 +36,16 @@ public class CartService extends MainService<Cart>{
     }
 
     public Cart getCartByUserId(UUID userId) {
-        return cartRepository.getCartByUserId(userId);
+        Cart cart = cartRepository.getCartByUserId(userId);
+
+        if (cart == null) {
+            cart = new Cart(UUID.randomUUID(),userId, new ArrayList<>());
+            cartRepository.save(cart);
+        }
+
+        return cart;
     }
+
 
     public void addProductToCart(UUID cartId, Product product) {
         cartRepository.addProductToCart(cartId, product);

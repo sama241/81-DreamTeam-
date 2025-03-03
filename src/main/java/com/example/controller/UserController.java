@@ -74,7 +74,7 @@ public class UserController {
     @PutMapping("/addProductToCart")
     public String addProductToCart(@RequestParam UUID userId, @RequestParam UUID productId) {
         userService.addProductToCart(userId, productId);
-        return "Product with ID " + productId + " added to user " + userId + "'s cart.";
+        return "Product added to cart";
     }
 
     @PutMapping("/deleteProductFromCart")
