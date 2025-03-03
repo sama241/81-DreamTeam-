@@ -22,7 +22,9 @@ public class OrderRepository extends MainRepository<Order> {
 
     // 6.5.2.1 Add Order with Unique ID
     public Order addOrder(Order order) {
-        order.setId(UUID.randomUUID()); // Generate a unique ID for the order
+        if(order.getId() == null) {
+            order.setId(UUID.randomUUID());
+        }// Generate a unique ID for the order
         save(order); // Save order to JSON
         return order;
     }

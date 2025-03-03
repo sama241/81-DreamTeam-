@@ -36,7 +36,7 @@ public class UserService  extends MainService {
 
 
     public ArrayList<User> getUsers() {
-        return userRepository.getUsers();
+        return (ArrayList<User>) userRepository.getUsers();
     }
 
     public void addOrderToUser(UUID userId) {
