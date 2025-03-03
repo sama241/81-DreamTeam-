@@ -38,9 +38,18 @@ public class UserController {
 
     @DeleteMapping("/delete/{userId}")
     public String deleteUserById(@PathVariable UUID userId) {
-        userService.deleteUserById(userId);
+        List<User> users = userService.getUsers(); // ✅ Fetch all users first
+
+        boolean userExists = users.stream().anyMatch(user -> user.getId().equals(userId));
+
+        if (!userExists) {
+            return"User not found";
+        }
+
+        userService.deleteUserById(userId); // ✅ Now call the service method
         return "User deleted successfully";
     }
+
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable UUID userId) {
         return userService.getUserById(userId);

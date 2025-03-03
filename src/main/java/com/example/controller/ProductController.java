@@ -41,13 +41,10 @@ public class ProductController {
 
 
     @PutMapping("/applyDiscount")
-    public void applyDiscount(@RequestBody Map<String, Object> discountData) {
-        double discount = ((Number) discountData.get("discount")).doubleValue();
-        ArrayList<UUID> productIds = new ArrayList<>();
-        for (String id : (ArrayList<String>) discountData.get("productIds")) {
-            productIds.add(UUID.fromString(id));
-        }
+    public String applyDiscount(@RequestParam double discount,@RequestBody ArrayList<UUID> productIds) {
+
         productService.applyDiscount(discount, productIds);
+        return "Discount applied successfully";
     }
 
 
