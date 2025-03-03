@@ -20,13 +20,15 @@ public class UserService  extends MainService {
     private final CartService cartService; // Dependency
     private final OrderService orderService; // Dependency
     private final ProductService productService;
+    private final Cart cart;
 
     // 🔹 Dependency Injection: Spring automatically injects UserRepository here
-    public UserService(UserRepository userRepository, CartService cartService, OrderService orderService, ProductService productService) {
+    public UserService(UserRepository userRepository, CartService cartService, OrderService orderService, ProductService productService, Cart cart) {
         this.userRepository = userRepository;
         this.cartService = cartService;
         this.orderService = orderService;
         this.productService = productService;
+        this.cart = cart;
     }
 
 
@@ -72,12 +74,20 @@ public class UserService  extends MainService {
     public void addProductToCart(UUID userId, UUID productId){
        Cart cart= cartService.getCartByUserId(userId);
         Product product=productService.getProductById(productId);
+        if(cart == null){
+            cart  = new Cart(userId,new ArrayList<>());
+            cartService.addCart(cart);
+        }
         cartService.addProductToCart(cart.getId(),product);
     }
-    public void deleteProductFromCart(UUID userId,UUID productId) {
+    public Boolean deleteProductFromCart(UUID userId,UUID productId) {
         Cart cart=cartService.getCartByUserId(userId);
         Product product=productService.getProductById(productId);
+        if(cart == null){
+            return false;
+        }
         cartService.deleteProductFromCart(cart.getId(),product);
+        return true;
     }
 
 }

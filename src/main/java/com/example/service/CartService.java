@@ -44,10 +44,20 @@ public class CartService extends MainService<Cart>{
     }
 
     public void deleteProductFromCart(UUID cartId, Product product) {
+        Cart cart = cartRepository.getCartById(cartId);
+        if (cart == null) {
+            System.out.println("Cannot delete product. Cart not found with ID: " + cartId);
+            return;
+        }
         cartRepository.deleteProductFromCart(cartId, product);
     }
 
     public void deleteCartById(UUID cartId) {
+        Cart cart = cartRepository.getCartById(cartId);
+        if (cart == null) {
+            System.out.println("Cannot delete cart. Cart not found with ID: " + cartId);
+            return;
+        }
         cartRepository.deleteCartById(cartId);
     }
 

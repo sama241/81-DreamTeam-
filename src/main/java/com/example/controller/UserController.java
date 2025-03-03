@@ -74,8 +74,13 @@ public class UserController {
 
     @PutMapping("/deleteProductFromCart")
     public String deleteProductFromCart(@RequestParam UUID userId, @RequestParam UUID productId) {
-        userService.deleteProductFromCart(userId, productId);
-        return "Product deleted from cart";
+        Boolean deleted = userService.deleteProductFromCart(userId, productId);
+        if(deleted) {
+            return "Product deleted from cart";
+        }
+
+        return "Cart is empty";
+
     }
 
 
