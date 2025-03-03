@@ -38,14 +38,23 @@ public class CartController {
 
     @PutMapping("/addProduct/{cartId}")
     public String addProductToCart(@PathVariable UUID cartId, @RequestBody Product product) {
-        cartService.addProductToCart(cartId, product);
-        return "Product added to cart successfully";
+        try {
+            cartService.addProductToCart(cartId, product);
+            return "Product added to cart successfully";
+        } catch (IllegalArgumentException e) {
+            return "Cart not found";
+        }
+
     }
 
     @DeleteMapping("/deleteProduct/{cartId}")
     public String deleteProductFromCart(@PathVariable UUID cartId, @RequestBody Product product) {
-        cartService.deleteProductFromCart(cartId, product);
-        return "Product deleted from cart";
+        try {
+            cartService.deleteProductFromCart(cartId, product);
+            return "Product deleted from cart";
+        } catch (IllegalArgumentException e) {
+            return "Cart not found";
+        }
     }
 
     @DeleteMapping("/delete/{cartId}")

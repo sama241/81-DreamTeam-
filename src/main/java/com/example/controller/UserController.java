@@ -49,7 +49,6 @@ public class UserController {
         userService.deleteUserById(userId); // ✅ Now call the service method
         return "User deleted successfully";
     }
-
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable UUID userId) {
         return userService.getUserById(userId);
@@ -74,13 +73,18 @@ public class UserController {
     @PutMapping("/addProductToCart")
     public String addProductToCart(@RequestParam UUID userId, @RequestParam UUID productId) {
         userService.addProductToCart(userId, productId);
-        return "Product added to cart";
+        return "Product with ID " + productId + " added to user " + userId + "'s cart.";
     }
 
     @PutMapping("/deleteProductFromCart")
     public String deleteProductFromCart(@RequestParam UUID userId, @RequestParam UUID productId) {
-        userService.deleteProductFromCart(userId, productId);
-        return "Product deleted from cart";
+        Boolean deleted = userService.deleteProductFromCart(userId, productId);
+        if(deleted) {
+            return "Product deleted from cart";
+        }
+
+        return "Cart is empty";
+
     }
 
 
