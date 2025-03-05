@@ -31,14 +31,23 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/checkout")
-    public void addOrderToUser(@PathVariable UUID userId){
+    public String addOrderToUser(@PathVariable UUID userId){
         userService.addOrderToUser(userId);
+        return "Order added successfully";
     }
 
     @DeleteMapping("/delete/{userId}")
     public String deleteUserById(@PathVariable UUID userId) {
-        userService.deleteUserById(userId);
-        return "User deleted successfully with ID: " + userId;
+        List<User> users = userService.getUsers(); // ✅ Fetch all users first
+
+        boolean userExists = users.stream().anyMatch(user -> user.getId().equals(userId));
+
+        if (!userExists) {
+            return"User not found";
+        }
+
+        userService.deleteUserById(userId); // ✅ Now call the service method
+        return "User deleted successfully";
     }
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable UUID userId) {
@@ -53,27 +62,27 @@ public class UserController {
     @PostMapping("/{userId}/removeOrder")
     public String removeOrderFromUser(@PathVariable UUID userId, @RequestParam UUID orderId) {
         userService.removeOrderFromUser(userId, orderId);
-        return "Order removed successfully!";
+        return "Order removed successfully";
     }
     @DeleteMapping("/{userId}/emptyCart")
     public String emptyCart(@PathVariable UUID userId){
         userService.emptyCart(userId);
-        return "Cart is empty";
+        return "Cart emptied successfully";
     }
 
     @PutMapping("/addProductToCart")
     public String addProductToCart(@RequestParam UUID userId, @RequestParam UUID productId) {
         userService.addProductToCart(userId, productId);
-        return "Product with ID " + productId + " added to user " + userId + "'s cart.";
+        return "Product added to cart";
     }
 
     @PutMapping("/deleteProductFromCart")
     public String deleteProductFromCart(@RequestParam UUID userId, @RequestParam UUID productId) {
-        userService.deleteProductFromCart(userId, productId);
-        return "Product with ID " + productId + " removed from user " + userId + "'s cart.";
+        Boolean deleted = userService.deleteProductFromCart(userId, productId);
+        if(deleted) {
+            return "Product deleted from cart";
+        }
+        return "Cart is empty";
     }
-
-
-
 
 }

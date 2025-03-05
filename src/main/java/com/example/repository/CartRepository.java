@@ -21,8 +21,14 @@ public class CartRepository extends MainRepository<Cart> {
         return Cart[].class;
     }
 
+    public CartRepository(){
+
+    }
+
     public Cart addCart(Cart cart) {
-        cart.setId(UUID.randomUUID());
+        if(cart.getId() == null){
+            cart.setId(UUID.randomUUID());
+        }
         save(cart);
         return cart;
     }

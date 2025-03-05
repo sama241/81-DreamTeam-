@@ -36,7 +36,7 @@ public Product addProduct(@RequestBody Product product) {
         return productService.getProductById(productId);
     }
 
-    @PutMapping("/{productId}")
+    @PutMapping("/update/{productId}")
     public Product updateProduct(@PathVariable UUID productId, @RequestBody Map<String, Object> updates) {
         String newName = (String) updates.get("newName");
         double newPrice = ((Number) updates.get("newPrice")).doubleValue();
@@ -45,19 +45,16 @@ public Product addProduct(@RequestBody Product product) {
 
 
     @PutMapping("/applyDiscount")
-    public void applyDiscount(@RequestBody Map<String, Object> discountData) {
-        double discount = ((Number) discountData.get("discount")).doubleValue();
-        ArrayList<UUID> productIds = new ArrayList<>();
-        for (String id : (ArrayList<String>) discountData.get("productIds")) {
-            productIds.add(UUID.fromString(id));
-        }
+    public String applyDiscount(@RequestParam double discount,@RequestBody ArrayList<UUID> productIds) {
+
         productService.applyDiscount(discount, productIds);
+        return "Discount applied successfully";
     }
 
 
     @DeleteMapping("/delete/{productId}")
     public String deleteProductById(@PathVariable UUID productId) {
         productService.deleteProductById(productId);
-        return "Product deleted successfully!";
+        return "Product deleted successfully";
     }
 }

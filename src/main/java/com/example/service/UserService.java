@@ -20,13 +20,15 @@ public class UserService  extends MainService {
     private final CartService cartService; // Dependency
     private final OrderService orderService; // Dependency
     private final ProductService productService;
+    private final Cart cart;
 
     // 🔹 Dependency Injection: Spring automatically injects UserRepository here
-    public UserService(UserRepository userRepository, CartService cartService, OrderService orderService, ProductService productService) {
+    public UserService(UserRepository userRepository, CartService cartService, OrderService orderService, ProductService productService, Cart cart) {
         this.userRepository = userRepository;
         this.cartService = cartService;
         this.orderService = orderService;
         this.productService = productService;
+        this.cart = cart;
     }
 
 
@@ -36,7 +38,7 @@ public class UserService  extends MainService {
 
 
     public ArrayList<User> getUsers() {
-        return userRepository.getUsers();
+        return (ArrayList<User>) userRepository.getUsers();
     }
 
     public void addOrderToUser(UUID userId) {
@@ -71,13 +73,28 @@ public class UserService  extends MainService {
     }
     public void addProductToCart(UUID userId, UUID productId){
        Cart cart= cartService.getCartByUserId(userId);
+       System.out.println("ana hena 2");
+       System.out.println(cart.getId());
         Product product=productService.getProductById(productId);
+        if(cart == null){
+            cart  = new Cart(userId,new ArrayList<>());
+            cartService.addCart(cart);
+        }
         cartService.addProductToCart(cart.getId(),product);
     }
-    public void deleteProductFromCart(UUID userId,UUID productId) {
-        Cart cart=cartService.getCartByUserId(userId);
-        Product product=productService.getProductById(productId);
-        cartService.deleteProductFromCart(cart.getId(),product);
+    public Boolean deleteProductFromCart(UUID userId, UUID productId) {
+        Cart cart = cartService.getCartByUserId(userId);
+
+        boolean productExists = cart.getProducts().stream()
+                .anyMatch(p -> p.getId().equals(productId));
+
+        if (!productExists) {
+            return false;
+        }
+
+        cart.getProducts().removeIf(p -> p.getId().equals(productId));
+        return true; // ✅ Product successfully removed
     }
+
 
 }

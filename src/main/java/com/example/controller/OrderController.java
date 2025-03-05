@@ -42,9 +42,9 @@ public class OrderController {
     public String deleteOrderById(@PathVariable UUID orderId) {
         try {
             orderService.deleteOrderById(orderId);
-            return "Order deleted successfully!";
+            return "Order deleted successfully";
         } catch (IllegalArgumentException e) {
-            return "Error: " + e.getMessage();
+            return "Order not found";
         }
     }
 }
