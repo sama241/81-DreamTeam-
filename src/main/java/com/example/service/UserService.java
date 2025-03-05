@@ -82,14 +82,19 @@ public class UserService  extends MainService {
         }
         cartService.addProductToCart(cart.getId(),product);
     }
-    public Boolean deleteProductFromCart(UUID userId,UUID productId) {
-        Cart cart=cartService.getCartByUserId(userId);
-        Product product=productService.getProductById(productId);
-        if(cart == null){
+    public Boolean deleteProductFromCart(UUID userId, UUID productId) {
+        Cart cart = cartService.getCartByUserId(userId);
+
+        boolean productExists = cart.getProducts().stream()
+                .anyMatch(p -> p.getId().equals(productId));
+
+        if (!productExists) {
             return false;
         }
-        cartService.deleteProductFromCart(cart.getId(),product);
-        return true;
+
+        cart.getProducts().removeIf(p -> p.getId().equals(productId));
+        return true; // ✅ Product successfully removed
     }
+
 
 }
