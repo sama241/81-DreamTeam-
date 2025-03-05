@@ -93,7 +93,7 @@ public class UserService  extends MainService {
         }
 
         cart.getProducts().removeIf(p -> p.getId().equals(productId));
-        return true; // ✅ Product successfully removed
+        return true;
     }
 
 

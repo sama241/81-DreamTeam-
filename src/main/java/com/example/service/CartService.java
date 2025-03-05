@@ -2,7 +2,9 @@ package com.example.service;
 
 import com.example.model.Cart;
 import com.example.model.Product;
+import com.example.model.User;
 import com.example.repository.CartRepository;
+import com.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,10 +15,12 @@ import java.util.UUID;
 public class CartService extends MainService<Cart>{
     private final CartRepository cartRepository;
     private final Cart cart;
+    private final UserRepository userRepository;
 
-    public CartService(CartRepository cartRepository, Cart cart) {
+    public CartService(CartRepository cartRepository, Cart cart, UserRepository userRepository) {
         this.cartRepository = cartRepository;
         this.cart = cart;
+        this.userRepository = userRepository;
     }
 
     public Cart addCart(Cart cart) {
@@ -36,6 +40,7 @@ public class CartService extends MainService<Cart>{
     }
 
     public Cart getCartByUserId(UUID userId) {
+        User user = userRepository.getUserById(userId);
         Cart cart = cartRepository.getCartByUserId(userId);
 
         if (cart == null) {
