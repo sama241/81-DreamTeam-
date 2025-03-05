@@ -20,13 +20,21 @@ public class ProductRepository extends MainRepository<Product> {
     protected Class<Product[]> getArrayType() {
         return Product[].class;
     }
-    public Product addProduct(Product product) {
-        product.setId(UUID.randomUUID());
-        ArrayList<Product> productList = findAll();  // ✅ Load from JSON file
-        productList.add(product);
-        saveAll(productList);  // ✅ Save back to JSON
-        return product;
-    }
+//    public Product addProduct(Product product) {
+//        product.setId(UUID.randomUUID());
+//        ArrayList<Product> productList = findAll();  // ✅ Load from JSON file
+//        productList.add(product);
+//        saveAll(productList);  // ✅ Save back to JSON
+//        return product;
+//    }
+public Product addProduct(Product product) {
+    product.setId(UUID.randomUUID());
+    ArrayList<Product> products = findAll();  // Load existing products
+    products.add(product);
+    saveAll(products); // Save the updated list
+    return product;
+}
+
     public ArrayList<Product> getProducts() {
         return findAll();
     }

@@ -14,9 +14,13 @@ public class ProductService {
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
-    public Product addProduct(Product product) {
-        return productRepository.addProduct(product);
-    }
+//    public Product addProduct(Product product) {
+//        return productRepository.addProduct(product);
+//    }
+public Product addProduct(Product product) {
+    return productRepository.addProduct(product);
+}
+
     public ArrayList<Product> getProducts() {
         return productRepository.getProducts();
     }

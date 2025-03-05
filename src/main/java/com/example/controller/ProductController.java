@@ -17,10 +17,14 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping("/")
-    public Product addProduct(@RequestBody Product product) {
-        return productService.addProduct(product);
-    }
+//    @PostMapping("/")
+//    public Product addProduct(@RequestBody Product product) {
+//        return productService.addProduct(product);
+//    }
+@PostMapping("/")
+public Product addProduct(@RequestBody Product product) {
+    return productService.addProduct(product);
+}
 
     @GetMapping("/")
     public ArrayList<Product> getProducts() {
