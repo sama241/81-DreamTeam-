@@ -39,6 +39,7 @@ public class UserRepository extends MainRepository<User> {
 
     // 5️⃣ Add Order to a User
     public void addOrderToUser(UUID userId, Order order) {
+
         ArrayList<User> users = (ArrayList<User>) getUsers(); // Get the list of users
         for (User user : users) {
             if (user.getId().equals(userId)) {
@@ -64,13 +65,12 @@ public User getUserById(UUID userId) {
 }
 
 public List<Order> getOrdersByUserId(UUID userId) {
-    // Get the user from the list
     User user = findAll().stream()
             .filter(u -> u.getId().equals(userId))
             .findFirst()
             .orElse(null);
-
-    // If user exists, return their orders, otherwise return an empty list
+    System.out.println("Retrieved order IDs for user " + userId + ": " +
+            user.getOrders().stream().map(Order::getId).toList());
     return (user != null) ? user.getOrders() : new ArrayList<>();
 }
 
