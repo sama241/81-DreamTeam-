@@ -31,40 +31,77 @@ public class UserService  extends MainService {
         this.cart = cart;
     }
 
-
     public User addUser(User user) {
+        if (user.getName() == null || user.getName().trim().isEmpty()) {
+            throw new RuntimeException("User name cannot be empty");
+        }
+        if (userRepository.getUserById(user.getId()) != null) {
+            throw new RuntimeException("User with this ID already exists");
+        }
+
         return userRepository.addUser(user);
     }
-
 
     public ArrayList<User> getUsers() {
         return (ArrayList<User>) userRepository.getUsers();
     }
 
     public void addOrderToUser(UUID userId) {
-        System.out.println(userId);
-        Cart cart=cartService.getCartByUserId(userId);
-        System.out.println(cart);
-        Order order=new Order(userId,cart.getTotalPrice(), cart.getProducts());
+        Cart cart = cartService.getCartByUserId(userId);
+
+        if (cart == null) {
+            throw new RuntimeException("Cart not found for user");
+        }
+        if (cart.getProducts().isEmpty()) {
+            throw new RuntimeException("Cannot place order with an empty cart");
+        }
+
+        Order order = new Order(userId, cart.getTotalPrice(), cart.getProducts());
         orderService.addOrder(order);
-        cartService.deleteCartById(cart.getId()); // Clears cart after order
-        userRepository.addOrderToUser(userId,order);
+        userRepository.addOrderToUser(userId, order);
+        cartService.deleteCartById(cart.getId());
+
+        System.out.println("Order added to user: " + userRepository.getOrdersByUserId(userId));
     }
+
 
     public void deleteUserById(UUID userId) {
         userRepository.deleteUserById(userId);
     }
     public User getUserById(UUID userId) {
-        return userRepository.getUserById(userId);
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+
+        User user = userRepository.getUserById(userId);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        return user;
     }
+
 
     public List<Order> getOrdersByUserId(UUID userId) {
         return userRepository.getOrdersByUserId(userId);
     }
 
     public void removeOrderFromUser(UUID userId, UUID orderId) {
+        User user = userRepository.getUserById(userId);
+
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        boolean removed = user.getOrders().removeIf(order -> order.getId().equals(orderId));
+
+        if (!removed) {
+            throw new RuntimeException("Order not found for user");
+        }
+
         userRepository.removeOrderFromUser(userId, orderId);
     }
+
+
     public void emptyCart(UUID userId) {
 
         Cart cart=cartService.getCartByUserId(userId);
@@ -73,8 +110,6 @@ public class UserService  extends MainService {
     }
     public void addProductToCart(UUID userId, UUID productId){
        Cart cart= cartService.getCartByUserId(userId);
-       System.out.println("ana hena 2");
-       System.out.println(cart.getId());
         Product product=productService.getProductById(productId);
         if(cart == null){
             cart  = new Cart(userId,new ArrayList<>());
@@ -82,19 +117,5 @@ public class UserService  extends MainService {
         }
         cartService.addProductToCart(cart.getId(),product);
     }
-    public Boolean deleteProductFromCart(UUID userId, UUID productId) {
-        Cart cart = cartService.getCartByUserId(userId);
-
-        boolean productExists = cart.getProducts().stream()
-                .anyMatch(p -> p.getId().equals(productId));
-
-        if (!productExists) {
-            return false;
-        }
-
-        cart.getProducts().removeIf(p -> p.getId().equals(productId));
-        return true; // ✅ Product successfully removed
-    }
-
 
 }
