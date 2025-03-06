@@ -29,7 +29,7 @@ public class UserController {
     public String addUser(@RequestBody User user) {
         try {
             userService.addUser(user);
-            return "User added successfully: " ;
+            return "User added successfully " ;
         } catch (RuntimeException e) {
             return "Error: " + e.getMessage();
         }

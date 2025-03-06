@@ -4,11 +4,13 @@ import com.example.model.Cart;
 import com.example.model.Product;
 import com.example.model.User;
 import com.example.model.Order;
+import com.example.repository.CartRepository;
 import com.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,14 +23,16 @@ public class UserService  extends MainService {
     private final OrderService orderService; // Dependency
     private final ProductService productService;
     private final Cart cart;
+    private  final CartRepository cartRepository;
 
     // 🔹 Dependency Injection: Spring automatically injects UserRepository here
-    public UserService(UserRepository userRepository, CartService cartService, OrderService orderService, ProductService productService, Cart cart) {
+    public UserService(UserRepository userRepository, CartService cartService, OrderService orderService, ProductService productService, Cart cart,CartRepository cartRepository) {
         this.userRepository = userRepository;
         this.cartService = cartService;
         this.orderService = orderService;
         this.productService = productService;
         this.cart = cart;
+        this.cartRepository=cartRepository;
     }
 
     public User addUser(User user) {
@@ -103,11 +107,21 @@ public class UserService  extends MainService {
 
 
     public void emptyCart(UUID userId) {
+        Cart cart = cartService.getCartByUserId(userId);
 
-        Cart cart=cartService.getCartByUserId(userId);
-        cartService.deleteCartById(cart.getId());
+          UUID oldID= cart.getId();
+          cartService.deleteCartById(cart.getId());
+
+            // ✅ Create a new empty cart for the user
+            Cart newCart = new Cart(oldID, userId, new ArrayList<>());
+            cartService.addCart(newCart);
 
     }
+
+
+
+
+
     public void addProductToCart(UUID userId, UUID productId){
        Cart cart= cartService.getCartByUserId(userId);
         Product product=productService.getProductById(productId);
