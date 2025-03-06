@@ -55,13 +55,19 @@ public class CartRepository extends MainRepository<Cart> {
 
     public void addProductToCart(UUID cartId, Product product) {
         ArrayList<Cart> carts = findAll();
+
         for (Cart cart : carts) {
             if (cart.getId().equals(cartId)) {
+                System.out.println("Before Adding: " + cart.getProducts());
                 cart.getProducts().add(product);
+                System.out.println("After Adding: " + cart.getProducts());
+
                 saveAll(carts);
                 return;
             }
         }
+
+        System.out.println("Cart Not Found: " + cartId);
     }
 
 

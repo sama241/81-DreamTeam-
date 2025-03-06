@@ -25,6 +25,10 @@ public class CartService extends MainService<Cart>{
 
     public Cart addCart(Cart cart) {
         Cart existingCart = cartRepository.getCartByUserId(cart.getUserId());
+        User user = userRepository.getUserById(cart.getUserId());
+        if(user == null) {
+            throw new IllegalArgumentException("User not found with ID: " + cart.getUserId());
+        }
         if (existingCart != null) {
             return existingCart;
         }
@@ -36,16 +40,21 @@ public class CartService extends MainService<Cart>{
     }
 
     public Cart getCartById(UUID cartId) {
+        if(cartId == null) {
+            throw new IllegalArgumentException("Cart ID cannot be null");
+        }
         return cartRepository.getCartById(cartId);
     }
 
     public Cart getCartByUserId(UUID userId) {
         User user = userRepository.getUserById(userId);
+        if(user == null) {
+            throw new IllegalArgumentException("User not found with ID: " + userId);
+        }
         Cart cart = cartRepository.getCartByUserId(userId);
 
         if (cart == null) {
-            cart = new Cart(UUID.randomUUID(),userId, new ArrayList<>());
-            cartRepository.save(cart);
+            return null;
         }
 
         return cart;
@@ -53,14 +62,27 @@ public class CartService extends MainService<Cart>{
 
 
     public void addProductToCart(UUID cartId, Product product) {
+        Cart cart = cartRepository.getCartById(cartId);
+
+        if (cart == null) {
+            throw new IllegalArgumentException("Cart not found with ID: " + cartId);
+        }
+
+        if (product == null) {
+            throw new IllegalArgumentException("Product cannot be null");
+        }
+
+
         cartRepository.addProductToCart(cartId, product);
     }
 
     public void deleteProductFromCart(UUID cartId, Product product) {
         Cart cart = cartRepository.getCartById(cartId);
         if (cart == null) {
-            System.out.println("Cannot delete product. Cart not found with ID: " + cartId);
-            return;
+            throw new IllegalArgumentException("Cart not found with ID: " + cartId);
+        }
+        if(product == null) {
+            throw new IllegalArgumentException("Product cannot be null");
         }
         cartRepository.deleteProductFromCart(cartId, product);
     }
@@ -68,8 +90,7 @@ public class CartService extends MainService<Cart>{
     public void deleteCartById(UUID cartId) {
         Cart cart = cartRepository.getCartById(cartId);
         if (cart == null) {
-            System.out.println("Cannot delete cart. Cart not found with ID: " + cartId);
-            return;
+            throw new IllegalArgumentException("Cart not found with ID: " + cartId);
         }
         cartRepository.deleteCartById(cartId);
     }
