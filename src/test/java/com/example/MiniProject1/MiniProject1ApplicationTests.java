@@ -691,8 +691,6 @@
 
 
 
-
-
  	@Test
  	void testGetOrdersEndPoint() throws Exception{
 
@@ -706,7 +704,6 @@
  		List<Order> responseOrders = objectMapper.readValue(responseContent, new TypeReference<List<Order>>() {});
  		assertEquals(getOrders().size(), responseOrders.size(), "Orders should be returned correctly From Endpoint");
  	}
-
 
 
 

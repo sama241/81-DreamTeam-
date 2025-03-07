@@ -20,9 +20,9 @@ public class OrderController {
 
     // 8.4.2.1 Add Order
     @PostMapping("/")
-    public Order addOrder(@RequestBody Order order) {
+    public void addOrder(@RequestBody Order order) {
         orderService.addOrder(order);
-        return order;
+
     }
 
     // 8.4.2.2 Get a Specific Order

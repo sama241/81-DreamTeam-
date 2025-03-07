@@ -21,13 +21,28 @@ public class OrderRepository extends MainRepository<Order> {
     public OrderRepository() {}
 
     // 6.5.2.1 Add Order with Unique ID
-    public Order addOrder(Order order) {
+    public void addOrder(Order order) {
+
+        if (order.getUserId() == null) {
+            throw new IllegalArgumentException("User ID cannot be null!");
+        }
+        // Validate that the total price is greater than zero
+        if (order.getTotalPrice() <= 0) {
+            throw new IllegalArgumentException("Total price must be greater than zero!");
+        }
+
+        // Validate that the order has at least one product
+
+        // Generate a unique ID if not provided
         if(order.getId() == null) {
             order.setId(UUID.randomUUID());
-        }// Generate a unique ID for the order
-        save(order); // Save order to JSON
-        return order;
+        }
+
+        // Save the order
+        save(order);
+
     }
+
 
     // 6.5.2.2 Get All Orders
     public ArrayList<Order> getOrders() {
@@ -48,4 +63,6 @@ public class OrderRepository extends MainRepository<Order> {
         orders.removeIf(order -> order.getId().equals(orderId));
         overrideData(orders); // Updates JSON file after deletion
     }
+
+
 }
