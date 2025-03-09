@@ -50,29 +50,48 @@ public class UserRepository extends MainRepository<User> {
         overrideData(users); // Save the updated user data
     }
 
-    // 7️⃣ Delete User by ID
+
+
+
     public void deleteUserById(UUID userId) {
-        ArrayList<User> users = (ArrayList<User>) getUsers(); // Get all users
-        users.removeIf(user -> user.getId().equals(userId)); // Remove the matching user
-        overrideData(users); // Save the updated user list
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+
+        // Get the existing list of users
+            ArrayList<User> users = (ArrayList<User>) getUsers(); // Get the list of users
+
+        boolean removed = users.removeIf(user -> user.getId().equals(userId));
+
+        if (!removed) {
+            throw new RuntimeException("User not found");
+        }
+
+        overrideData(users); // ✅ Ensure persistence
     }
 
-public User getUserById(UUID userId) {
+
+
+    public User getUserById(UUID userId) {
     return findAll().stream()
             .filter(user -> user.getId().equals(userId))
             .findFirst()
             .orElse(null);
 }
 
-public List<Order> getOrdersByUserId(UUID userId) {
-    User user = findAll().stream()
-            .filter(u -> u.getId().equals(userId))
-            .findFirst()
-            .orElse(null);
-    System.out.println("Retrieved order IDs for user " + userId + ": " +
-            user.getOrders().stream().map(Order::getId).toList());
-    return (user != null) ? user.getOrders() : new ArrayList<>();
-}
+    public List<Order> getOrdersByUserId(UUID userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+
+        User user = findAll().stream()
+                .filter(u -> userId.equals(u.getId()))
+                .findFirst()
+                .orElse(null);
+
+        return (user != null) ? user.getOrders() : new ArrayList<>();
+    }
+
 
 
     public void removeOrderFromUser(UUID userId, UUID orderId) {
