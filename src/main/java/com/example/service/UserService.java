@@ -35,7 +35,6 @@ public class UserService  extends MainService {
         this.cartRepository=cartRepository;
     }
 
-
     public User addUser(User user) {
         if (user.getName() == null || user.getName().trim().isEmpty()) {
             throw new RuntimeException("User name cannot be empty");
@@ -48,8 +47,11 @@ public class UserService  extends MainService {
     }
 
     public ArrayList<User> getUsers() {
+
         return (ArrayList<User>) userRepository.getUsers();
     }
+
+
 
     public void addOrderToUser(UUID userId) {
         Cart cart = cartService.getCartByUserId(userId);
@@ -58,8 +60,7 @@ public class UserService  extends MainService {
             throw new RuntimeException("Cart not found for user");
         }
         if (cart.getProducts().isEmpty()) {
-            throw new RuntimeException("Cannot place order with an empty cart");
-        }
+            throw new RuntimeException("Cannot place order with an empty cart");}
 
         Order order = new Order(userId, cart.getTotalPrice(), cart.getProducts());
         orderService.addOrder(order);
@@ -70,20 +71,25 @@ public class UserService  extends MainService {
     }
 
 
+
     public void deleteUserById(UUID userId) {
         userRepository.deleteUserById(userId);
     }
+
     public User getUserById(UUID userId) {
         if (userId == null) {
             throw new IllegalArgumentException("User ID cannot be null");
         }
 
         User user = userRepository.getUserById(userId);
+
         if (user == null) {
             throw new RuntimeException("User not found");
         }
+
         return user;
     }
+
 
     public List<Order> getOrdersByUserId(UUID userId) {
         return userRepository.getOrdersByUserId(userId);
@@ -107,16 +113,27 @@ public class UserService  extends MainService {
 
 
     public void emptyCart(UUID userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+
         Cart cart = cartService.getCartByUserId(userId);
+        if (cart == null) {
+            throw new RuntimeException("No cart found for user with ID: " + userId);
+        }
 
-          UUID oldID= cart.getId();
-          cartService.deleteCartById(cart.getId());
+        UUID oldID = cart.getId();
+        cartService.deleteCartById(oldID);
 
-            // ✅ Create a new empty cart for the user
-            Cart newCart = new Cart(oldID, userId, new ArrayList<>());
-            cartService.addCart(newCart);
-
+        Cart newCart = new Cart(oldID, userId, new ArrayList<>());
+        cartService.addCart(newCart);
     }
+
+
+
+
+
+
     public void addProductToCart(UUID userId, UUID productId){
        Cart cart= cartService.getCartByUserId(userId);
         Product product=productService.getProductById(productId);
