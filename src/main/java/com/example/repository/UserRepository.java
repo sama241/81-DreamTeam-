@@ -2,6 +2,7 @@ package com.example.repository;
 
 import com.example.model.User;
 import com.example.model.Order;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -10,10 +11,11 @@ import java.util.UUID;
 
 @Repository
 public class UserRepository extends MainRepository<User> {
-
+    @Value("${spring.application.userDataPath}")
+    private String userDataPath;
     @Override
     protected String getDataPath() {
-        return "src/main/java/com/example/data/users.json"; // JSON file path for users
+        return userDataPath; // JSON file path for users
     }
 
     @Override
@@ -39,6 +41,7 @@ public class UserRepository extends MainRepository<User> {
 
     // 5️⃣ Add Order to a User
     public void addOrderToUser(UUID userId, Order order) {
+
         ArrayList<User> users = (ArrayList<User>) getUsers(); // Get the list of users
         for (User user : users) {
             if (user.getId().equals(userId)) {
@@ -49,30 +52,48 @@ public class UserRepository extends MainRepository<User> {
         overrideData(users); // Save the updated user data
     }
 
-    // 7️⃣ Delete User by ID
+
+
+
     public void deleteUserById(UUID userId) {
-        ArrayList<User> users = (ArrayList<User>) getUsers(); // Get all users
-        users.removeIf(user -> user.getId().equals(userId)); // Remove the matching user
-        overrideData(users); // Save the updated user list
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+
+        // Get the existing list of users
+            ArrayList<User> users = (ArrayList<User>) getUsers(); // Get the list of users
+
+        boolean removed = users.removeIf(user -> user.getId().equals(userId));
+
+        if (!removed) {
+            throw new RuntimeException("User not found");
+        }
+
+        overrideData(users); // ✅ Ensure persistence
     }
 
-public User getUserById(UUID userId) {
+
+
+    public User getUserById(UUID userId) {
     return findAll().stream()
             .filter(user -> user.getId().equals(userId))
             .findFirst()
             .orElse(null);
 }
 
-public List<Order> getOrdersByUserId(UUID userId) {
-    // Get the user from the list
-    User user = findAll().stream()
-            .filter(u -> u.getId().equals(userId))
-            .findFirst()
-            .orElse(null);
+    public List<Order> getOrdersByUserId(UUID userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
 
-    // If user exists, return their orders, otherwise return an empty list
-    return (user != null) ? user.getOrders() : new ArrayList<>();
-}
+        User user = findAll().stream()
+                .filter(u -> userId.equals(u.getId()))
+                .findFirst()
+                .orElse(null);
+
+        return (user != null) ? user.getOrders() : new ArrayList<>();
+    }
+
 
 
     public void removeOrderFromUser(UUID userId, UUID orderId) {
@@ -99,6 +120,8 @@ public List<Order> getOrdersByUserId(UUID userId) {
         }
     }
 
-
+    public void clearUsers() {
+        overrideData(new ArrayList<>()); // 🚀 Clears the JSON data by replacing it with an empty list
+    }
 
 }

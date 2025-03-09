@@ -2,6 +2,7 @@ package com.example.repository;
 
 import com.example.model.Cart;
 import com.example.model.Product;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -11,9 +12,11 @@ import java.util.UUID;
 @SuppressWarnings("rawtypes")
 
 public class CartRepository extends MainRepository<Cart> {
+    @Value("${spring.application.cartDataPath}")
+    private String cartDataPath;
     @Override
     protected String getDataPath() {
-        return "src/main/java/com/example/data/carts.json";
+        return cartDataPath;
     }
 
     @Override
@@ -55,13 +58,19 @@ public class CartRepository extends MainRepository<Cart> {
 
     public void addProductToCart(UUID cartId, Product product) {
         ArrayList<Cart> carts = findAll();
+
         for (Cart cart : carts) {
             if (cart.getId().equals(cartId)) {
+                System.out.println("Before Adding: " + cart.getProducts());
                 cart.getProducts().add(product);
+                System.out.println("After Adding: " + cart.getProducts());
+
                 saveAll(carts);
                 return;
             }
         }
+
+        System.out.println("Cart Not Found: " + cartId);
     }
 
 

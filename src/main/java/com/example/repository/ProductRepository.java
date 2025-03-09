@@ -1,6 +1,8 @@
+
 package com.example.repository;
 
 import com.example.model.Product;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,24 +13,30 @@ public class ProductRepository extends MainRepository<Product> {
 
 
     public ProductRepository() {}
+    @Value("${spring.application.productDataPath}")
+    private String productDataPath;
 
     @Override
     protected String getDataPath() {
-        return "src/main/java/com/example/data/products.json";
+        return productDataPath;
     }
     @Override
     protected Class<Product[]> getArrayType() {
         return Product[].class;
     }
     public Product addProduct(Product product) {
-        if(product.getId() == null){
+        if (product.getName() == null || product.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Product name cannot be null");
+        }
+        if (product.getId() == null) {
             product.setId(UUID.randomUUID());
         }
-        ArrayList<Product> productList = findAll();  // ✅ Load from JSON file
+        ArrayList<Product> productList = findAll();
         productList.add(product);
-        saveAll(productList);  // ✅ Save back to JSON
+        saveAll(productList);
         return product;
     }
+
     public ArrayList<Product> getProducts() {
         return findAll();
     }
@@ -41,6 +49,10 @@ public class ProductRepository extends MainRepository<Product> {
 
 
     public Product updateProduct(UUID productId, String newName, double newPrice) {
+        if (newName == null || newName.trim().isEmpty() || newPrice < 0) {
+            throw new IllegalArgumentException("Invalid product update parameters");
+        }
+
         ArrayList<Product> productList = findAll();  // ✅ Load from JSON file
         for (Product product : productList) {
             if (product.getId().equals(productId)) {
@@ -53,6 +65,11 @@ public class ProductRepository extends MainRepository<Product> {
         return null;
     }
     public void applyDiscount(double discount, ArrayList<UUID> productIds) {
+        // Step 1️⃣: Validate discount (should not be negative)
+        if (discount < 0) {
+            throw new IllegalArgumentException("Discount cannot be negative");
+        }
+
         ArrayList<Product> productList = findAll();
         boolean updated = false;
 
@@ -69,10 +86,11 @@ public class ProductRepository extends MainRepository<Product> {
         }
     }
 
+
     public void deleteProductById(UUID productId) {
-    ArrayList<Product> productList = findAll();
-    productList.removeIf(product -> product.getId().equals(productId));
-    saveAll(productList);
-}
+        ArrayList<Product> productList = findAll();
+        productList.removeIf(product -> product.getId().equals(productId));
+        saveAll(productList);
+    }
 
 }
