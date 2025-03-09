@@ -99,6 +99,8 @@ public List<Order> getOrdersByUserId(UUID userId) {
         }
     }
 
-
+    public void clearUsers() {
+        overrideData(new ArrayList<>()); // 🚀 Clears the JSON data by replacing it with an empty list
+    }
 
 }

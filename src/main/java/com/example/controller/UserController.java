@@ -26,14 +26,15 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public String addUser(@RequestBody User user) {
+    public User addUser(@RequestBody User user) {
         try {
-            userService.addUser(user);
-            return "User added successfully " ;
+            return userService.addUser(user);
         } catch (RuntimeException e) {
-            return "Error: " + e.getMessage();
+            System.out.println("Error: " + e.getMessage());
+            return null; //
         }
     }
+
 
     @GetMapping("/")
     public ArrayList<User> getUsers() {
