@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class OrderServiceTest {
+class MiniProject1OrderTestFiles {
 
     @Autowired
     private OrderService orderService;
@@ -40,7 +40,7 @@ class OrderServiceTest {
         objectMapper.writeValue(new File(DATA_PATH), new ArrayList<Order>());
     }
 
-                                 /// /////////// addOrder Tests //////////////////////
+    /// /////////// addOrder Tests //////////////////////
 
     @Test
     void testPreventAddingOrderWithoutUserId() throws IOException {
@@ -91,20 +91,20 @@ class OrderServiceTest {
 
 
 
-                                           ///////////// get orders tests ///////////////////
+    ///////////// get orders tests ///////////////////
 
-@Test
-void testGetOrdersReturnsEmptyListWhenNoOrdersExist() throws IOException {
+    @Test
+    void testGetOrdersReturnsEmptyListWhenNoOrdersExist() throws IOException {
 
-    objectMapper.writeValue(new File(DATA_PATH), new ArrayList<Order>());
+        objectMapper.writeValue(new File(DATA_PATH), new ArrayList<Order>());
 
-    ArrayList<Order> retrievedOrders = orderService.getOrders();
+        ArrayList<Order> retrievedOrders = orderService.getOrders();
 
-    System.out.println("Retrieved Orders: " + retrievedOrders);
+        System.out.println("Retrieved Orders: " + retrievedOrders);
 
-    assertNotNull(retrievedOrders, "getOrders() should not return null");
-    assertTrue(retrievedOrders.isEmpty(), "getOrders() should return an empty list when no orders exist");
-}
+        assertNotNull(retrievedOrders, "getOrders() should not return null");
+        assertTrue(retrievedOrders.isEmpty(), "getOrders() should return an empty list when no orders exist");
+    }
 
     @Test
     void testGetOrdersReturnsCorrectNumberOfOrders() throws IOException {
@@ -157,24 +157,24 @@ void testGetOrdersReturnsEmptyListWhenNoOrdersExist() throws IOException {
 
 
 
-                                           /// //////////////////// getorderbyID  Tests //////////////////////
+    /// //////////////////// getorderbyID  Tests //////////////////////
 
 
 
-@Test
-void testGetOrderByIdReturnsNullForNonExistentOrder() throws IOException {
+    @Test
+    void testGetOrderByIdReturnsNullForNonExistentOrder() throws IOException {
 
-    objectMapper.writeValue(new File(DATA_PATH), new ArrayList<Order>());
+        objectMapper.writeValue(new File(DATA_PATH), new ArrayList<Order>());
 
-    UUID nonExistentOrderId = UUID.randomUUID();
+        UUID nonExistentOrderId = UUID.randomUUID();
 
-    Order retrievedOrder = orderService.getOrderById(nonExistentOrderId);
+        Order retrievedOrder = orderService.getOrderById(nonExistentOrderId);
 
-    System.out.println("Retrieved Order for Non-Existent ID: " + retrievedOrder);
+        System.out.println("Retrieved Order for Non-Existent ID: " + retrievedOrder);
 
-    // Assertions
-    assertNull(retrievedOrder, "getOrderById() should return null if the order does not exist");
-}
+        // Assertions
+        assertNull(retrievedOrder, "getOrderById() should return null if the order does not exist");
+    }
 
     @Test
     void testGetOrderByIdReturnsNullAfterOrderIsDeleted() throws IOException {
@@ -211,27 +211,27 @@ void testGetOrderByIdReturnsNullForNonExistentOrder() throws IOException {
 
 
 
-                                                 /// /////////     deleteorderbyID Tests    ///////////////////////////
-                                                 ///
-@Test
-void testDeleteOrderByIdSuccessfullyRemovesOrder() throws IOException {
+    /// /////////     deleteorderbyID Tests    ///////////////////////////
+    ///
+    @Test
+    void testDeleteOrderByIdSuccessfullyRemovesOrder() throws IOException {
 
-    objectMapper.writeValue(new File(DATA_PATH), new ArrayList<Order>());
+        objectMapper.writeValue(new File(DATA_PATH), new ArrayList<Order>());
 
-    UUID orderId = UUID.randomUUID();
-    Order testOrder = new Order(orderId, UUID.randomUUID(), 99.99, List.of(new Product(UUID.randomUUID(), "Test Product", 19.99)));
-    orderService.addOrder(testOrder);
+        UUID orderId = UUID.randomUUID();
+        Order testOrder = new Order(orderId, UUID.randomUUID(), 99.99, List.of(new Product(UUID.randomUUID(), "Test Product", 19.99)));
+        orderService.addOrder(testOrder);
 
-    assertNotNull(orderService.getOrderById(orderId), "Order should exist before deletion");
+        assertNotNull(orderService.getOrderById(orderId), "Order should exist before deletion");
 
-    orderService.deleteOrderById(orderId);
+        orderService.deleteOrderById(orderId);
 
-    Order retrievedOrderAfterDelete = orderService.getOrderById(orderId);
+        Order retrievedOrderAfterDelete = orderService.getOrderById(orderId);
 
-    System.out.println("Retrieved Order After Deletion: " + retrievedOrderAfterDelete);
+        System.out.println("Retrieved Order After Deletion: " + retrievedOrderAfterDelete);
 
-    assertNull(retrievedOrderAfterDelete, "getOrderById() should return null after the order has been deleted");
-}
+        assertNull(retrievedOrderAfterDelete, "getOrderById() should return null after the order has been deleted");
+    }
     @Test
     void testDeleteOrderByIdThrowsExceptionForNonExistentOrder() {
 
