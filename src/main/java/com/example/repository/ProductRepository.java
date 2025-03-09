@@ -21,14 +21,18 @@ public class ProductRepository extends MainRepository<Product> {
         return Product[].class;
     }
     public Product addProduct(Product product) {
-        if(product.getId() == null){
+        if (product.getName() == null || product.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Product name cannot be null");
+        }
+        if (product.getId() == null) {
             product.setId(UUID.randomUUID());
         }
-        ArrayList<Product> productList = findAll();  // ✅ Load from JSON file
+        ArrayList<Product> productList = findAll();
         productList.add(product);
-        saveAll(productList);  // ✅ Save back to JSON
+        saveAll(productList);
         return product;
     }
+
     public ArrayList<Product> getProducts() {
         return findAll();
     }
@@ -41,6 +45,10 @@ public class ProductRepository extends MainRepository<Product> {
 
 
     public Product updateProduct(UUID productId, String newName, double newPrice) {
+        if (newName == null || newName.trim().isEmpty() || newPrice < 0) {
+            throw new IllegalArgumentException("Invalid product update parameters");
+        }
+
         ArrayList<Product> productList = findAll();  // ✅ Load from JSON file
         for (Product product : productList) {
             if (product.getId().equals(productId)) {
@@ -53,6 +61,11 @@ public class ProductRepository extends MainRepository<Product> {
         return null;
     }
     public void applyDiscount(double discount, ArrayList<UUID> productIds) {
+        // Step 1️⃣: Validate discount (should not be negative)
+        if (discount < 0) {
+            throw new IllegalArgumentException("Discount cannot be negative");
+        }
+
         ArrayList<Product> productList = findAll();
         boolean updated = false;
 
@@ -68,6 +81,7 @@ public class ProductRepository extends MainRepository<Product> {
             saveAll(productList);
         }
     }
+
 
     public void deleteProductById(UUID productId) {
     ArrayList<Product> productList = findAll();
