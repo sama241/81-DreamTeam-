@@ -59,8 +59,12 @@ public class CartController {
 
     @DeleteMapping("/delete/{cartId}")
     public String deleteCartById(@PathVariable UUID cartId) {
-        cartService.deleteCartById(cartId);
-        return "Cart deleted successfully";
+        try{
+            cartService.deleteCartById(cartId);
+            return "Cart deleted successfully";
+        }catch (IllegalArgumentException e) {
+            return "Cart not found";
+        }
     }
 
     @GetMapping("/total/{cartId}")

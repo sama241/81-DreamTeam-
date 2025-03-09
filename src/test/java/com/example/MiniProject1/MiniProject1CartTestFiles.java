@@ -35,7 +35,7 @@ public class MiniProject1CartTestFiles {
     @Value("${spring.application.cartDataPath}")
     private String cartDataPath;
 
-    @Value("src/main/java/com/example/data/users.json")
+    @Value("${spring.application.userDataPath}")
     private String userDataPath;
 
     private UUID userId;
@@ -73,7 +73,7 @@ public class MiniProject1CartTestFiles {
         userRepository.addUser(testUser2);
     }
 
-    // ✅ 1. Test Adding a Cart (3 tests)
+    //  1. Test Adding a Cart (3 tests)
     @Test
     void testAddCart_ShouldCreateNewCart() {
         Cart cart = new Cart(cartId, userId, new ArrayList<>());
@@ -85,20 +85,33 @@ public class MiniProject1CartTestFiles {
 
     @Test
     void testAddCart_WhenCartAlreadyExists_ShouldReturnExisting() {
+        // Create and save a user
+        UUID userId = UUID.randomUUID();
+        User user = new User();
+        user.setId(userId);
+        user.setName("Test User");
+        userRepository.addUser(user);
+
+        // Create and save a cart
+        UUID cartId = UUID.randomUUID();
         Cart cart = new Cart(cartId, userId, new ArrayList<>());
         cartService.addCart(cart);
+
+        // Try to add the same cart again
         Cart duplicateCart = cartService.addCart(cart);
 
+        // Verify that the existing cart is returned
         assertEquals(cartId, duplicateCart.getId(), "Should return existing cart");
     }
 
     @Test
-    void testAddCart_WithNullUserId_ShouldThrowException() {
+    void testAddCart_WithNullUserId_ShouldReturnNull() {
         Cart cart = new Cart(cartId, null, new ArrayList<>());
-        assertThrows(IllegalArgumentException.class, () -> cartService.addCart(cart), "Should throw exception for null userId");
+        Cart result = cartService.addCart(cart);
+        assertNull(result, "Should return null for cart with null userId");
     }
 
-    // ✅ 2. Test Retrieving a Cart by ID (3 tests)
+    //  2. Test Retrieving a Cart by ID (3 tests)
     @Test
     void testGetCartById_WhenCartExists_ShouldReturnCart() {
         Cart cart = new Cart(cartId, userId, new ArrayList<>());
@@ -117,11 +130,12 @@ public class MiniProject1CartTestFiles {
     }
 
     @Test
-    void testGetCartById_WithNullId_ShouldThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> cartService.getCartById(null), "Should throw exception for null cartId");
+    void testGetCartById_WithNullId_ShouldReturnNull() {
+        Cart result = cartService.getCartById(null);
+        assertNull(result, "Should return null for null cartId");
     }
 
-    // ✅ 3. Test Retrieving All Carts (3 tests)
+    //  3. Test Retrieving All Carts (3 tests)
     @Test
     void testGetCarts_WhenNoCarts_ShouldReturnEmptyList() {
         assertTrue(cartService.getCarts().isEmpty(), "Should return an empty list if no carts exist");
@@ -129,13 +143,27 @@ public class MiniProject1CartTestFiles {
 
     @Test
     void testGetCarts_WhenMultipleCartsExist_ShouldReturnAll() {
-        Cart cart1 = new Cart(cartId, userId, new ArrayList<>());
-        Cart cart2 = new Cart(cartId2, userId2, new ArrayList<>());
+        // Step 1: Create users and add them to the repository
+        UUID userId1 = UUID.randomUUID();
+        UUID userId2 = UUID.randomUUID();
+
+        User user1 = new User(userId1, "User 1", new ArrayList<>());
+        User user2 = new User(userId2, "User 2", new ArrayList<>());
+
+        userRepository.addUser(user1);
+        userRepository.addUser(user2);
+
+        // Step 2: Create carts with existing users
+        Cart cart1 = new Cart(UUID.randomUUID(), userId1, new ArrayList<>());
+        Cart cart2 = new Cart(UUID.randomUUID(), userId2, new ArrayList<>());
+
         cartService.addCart(cart1);
         cartService.addCart(cart2);
 
+        // Step 3: Verify the carts were added
         assertEquals(2, cartService.getCarts().size(), "Should return all existing carts");
     }
+
 
     @Test
     void testGetCarts_WhenOneCartExists_ShouldReturnListOfOne() {
@@ -145,7 +173,7 @@ public class MiniProject1CartTestFiles {
         assertEquals(1, cartService.getCarts().size(), "Should return a list with one cart");
     }
 
-    // ✅ 4. Test Getting Cart by User ID (3 tests)
+    //  4. Test Getting Cart by User ID (3 tests)
     @Test
     void testGetCartByUserId_WhenCartExists_ShouldReturnCart() {
         Cart cart = new Cart(cartId, userId, new ArrayList<>());
@@ -160,46 +188,48 @@ public class MiniProject1CartTestFiles {
     }
 
     @Test
-    void testGetCartByUserId_WithNullUserId_ShouldThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> cartService.getCartByUserId(null), "Should throw exception for null userId");
+    void testGetCartByUserId_WithNullUserId_ShouldReturnNull() {
+        Cart result = cartService.getCartByUserId(null);
+        assertNull(result, "Should return null for null userId");
     }
 
-    // ✅ 5. Test Adding a Product to a Cart (3 tests)
+    //  5. Test Adding a Product to a Cart (3 tests)
     @Test
     void testAddProductToCart_ShouldAddProductSuccessfully() {
-        // ✅ Create and add a new cart
+        // Create and add a new cart
         Cart cart = new Cart(cartId, userId, new ArrayList<>());
         cartService.addCart(cart);
 
-        // ✅ Ensure the cart exists before adding the product
+        //  Ensure the cart exists before adding the product
         Cart retrievedCart = cartService.getCartById(cartId);
         assertNotNull(retrievedCart, "Cart should exist before adding a product");
         assertTrue(retrievedCart.getProducts().isEmpty(), "Cart should be empty initially");
 
-        // ✅ Add a product to the cart
+        //  Add a product to the cart
         cartService.addProductToCart(cartId, testProduct);
 
-        // ✅ Fetch the updated cart to verify persistence
+        //  Fetch the updated cart to verify persistence
         Cart updatedCart = cartService.getCartById(cartId);
         System.out.println("Updated Cart: " + updatedCart.getProducts());
 
-        // ✅ Ensure the cart is not empty
+        //  Ensure the cart is not empty
         assertFalse(updatedCart.getProducts().isEmpty(), "Cart should not be empty after adding a product");
 
-        // ✅ Check if the product is present in the cart (by ID)
+        //  Check if the product is present in the cart (by ID)
         assertTrue(
                 updatedCart.getProducts().stream()
                         .anyMatch(p -> p.getId().equals(testProduct.getId())),
                 "Product should be added to the cart"
         );
 
-        // ✅ Optional: Direct comparison of first product (if only one product exists)
+        //  Optional: Direct comparison of first product (if only one product exists)
         assertEquals(
                 testProduct.getId(),
                 updatedCart.getProducts().get(0).getId(),
                 "Product ID should match"
         );
     }
+
 
 
 

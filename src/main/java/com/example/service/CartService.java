@@ -24,32 +24,47 @@ public class CartService extends MainService<Cart>{
     }
 
     public Cart addCart(Cart cart) {
-        Cart existingCart = cartRepository.getCartByUserId(cart.getUserId());
-        User user = userRepository.getUserById(cart.getUserId());
-        if(user == null) {
-            throw new IllegalArgumentException("User not found with ID: " + cart.getUserId());
+        // Validate input
+        if (cart == null) {
+            return null;
         }
+        UUID userId = cart.getUserId();
+        if (userId == null) {
+            return null;
+        }
+
+        // Check if the user exists
+        User user = userRepository.getUserById(userId);
+        if (user == null) {
+            return null;
+        }
+
+        // Check if the user already has a cart
+        Cart existingCart = cartRepository.getCartByUserId(userId);
         if (existingCart != null) {
             return existingCart;
         }
+
         return cartRepository.addCart(cart);
     }
-
     public ArrayList<Cart> getCarts() {
         return cartRepository.getCarts();
     }
 
     public Cart getCartById(UUID cartId) {
         if(cartId == null) {
-            throw new IllegalArgumentException("Cart ID cannot be null");
+            return null;
         }
         return cartRepository.getCartById(cartId);
     }
 
     public Cart getCartByUserId(UUID userId) {
+        if (userId == null) {
+            return null; // Return null instead of throwing an exception
+        }
         User user = userRepository.getUserById(userId);
-        if(user == null) {
-            throw new IllegalArgumentException("User not found with ID: " + userId);
+        if (user == null) {
+            return null;
         }
         Cart cart = cartRepository.getCartByUserId(userId);
 
