@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class MiniProject1OrderTestFiles {
+class OrderServiceTest {
 
     @Autowired
     private OrderService orderService;

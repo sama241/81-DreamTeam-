@@ -21,7 +21,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class MiniProject1UserTestFiles {
+public class UserServiceTest {
     @Autowired
     private UserService userService;
 
@@ -68,9 +68,7 @@ public class MiniProject1UserTestFiles {
 
     @AfterEach
     void tearDown() {
-        System.out.println("Before deletion: " + userRepository.findAll()); // Debugging
         userRepository.clearUsers();
-        System.out.println("After deletion: " + userRepository.findAll()); // Debugging
         Cart cart = cartService.getCartByUserId(testUserId);
         if (cart != null) {
             cartRepository.deleteCartById(cart.getId()); // Delete cart using its ID

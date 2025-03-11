@@ -21,7 +21,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class MiniProject1CartTestFiles {
+public class CartServiceTest {
 
     @Autowired
     private CartService cartService;
